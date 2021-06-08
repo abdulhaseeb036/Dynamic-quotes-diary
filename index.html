@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/dda41994d4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
+    <title>Quotes Diary</title>
+</head>
+
+<body>
+
+    <nav id='menu'>
+        <input type='checkbox' id='responsive-menu' onclick="updatemenu()"><label></label>
+        <ul>
+            <li><a href='http://'>Home</a></li>
+        </ul>
+    </nav>
+    <i class="fas fa-search searchInput" id="searchInput" onclick="search()"></i>
+    <div><input type="text" id="inputSerchField" onkeydown="getSearchvalue(event)" placeholder="Search" /></div>
+
+    <div class="boxContainet">
+        <div class="box">
+            <div class="qoutes" id="qoutes"></div>
+            <div id="author" class="author"></div>
+            <div class="updateBtndiv">
+                <button id="updateBtn">update</button>
+            </div>
+            <div>
+                <i class="fas fa-share-alt-square shareicon" onclick="share()"></i>
+            </div>
+            <div id="socialiconsDiv" class="socialiconsDiv">
+                <i class="fab fa-twitter socialicons" onclick="sharetweet()"></i><sup>tweet me</sup>                
+                <!-- <i class="fas fa-share-alt-square socialicons"></i>
+                <i class="fas fa-share-alt-square socialicons"></i> -->
+            </div>
+        </div>
+    </div>
+    <div class="bgwave"></div>
+
+
+    <!-- JS -->
+    <script>
+        let data = "";
+        let rnum = +""
+        let ApiData = "";
+        let authorName = "";
+        let allAuthor = "";
+        let dataa = "";
+        let searchInput = document.getElementById('searchInput');
+        let qoutes = document.getElementById('qoutes');
+        let author = document.getElementById('author');
+        let updateBtn = document.getElementById('updateBtn');
+        let socialiconsDiv = document.getElementById('socialiconsDiv');
+        let cancelSocialicon = document.getElementById('cancelSocialicon');
+        let inputSerchField = document.getElementById('inputSerchField');
+
+        let counter = 0;
+
+        // MAIN MENUE ....
+        function updatemenu() {
+            if (document.getElementById('responsive-menu').checked == true) {
+                document.getElementById('menu').style.borderBottomRightRadius = '0';
+                document.getElementById('menu').style.borderBottomLeftRadius = '0';
+            } else {
+                document.getElementById('menu').style.borderRadius = '10px';
+            }
+        } //.......
+
+
+
+
+        const getDataAPI = async () => {
+            const url = "https://type.fit/api/quotes"
+            try {
+                const urldata = await fetch(url);
+                ApiData = await urldata.json();
+                getnewQuotes()
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        // GETNEWQUOTES ON BTN CLICK ......
+        const getnewQuotes = () => {
+            rnum = Math.floor(Math.random() * 120);
+            // console.log(rnum);
+            ApiData[rnum].text ? data = ApiData[rnum].text : data = "Update Please";
+            ApiData[rnum].author ? authorName = ApiData[rnum].author : authorName = "UnKnow";
+            // console.log(data);
+            qoutes.innerHTML = `<i class="fas fa-quote-left"></i> ${data}  <i class="fas fa-quote-right"></i>`;
+            author.innerText = authorName;
+
+        }
+
+        // share btn event
+        const share = () => {
+            counter++;
+            if (counter % 2 === 0) {
+                socialiconsDiv.style.display = "none";
+            }
+            else {
+                socialiconsDiv.style.display = "grid";
+            }
+        }
+
+        // Search
+        const search = () => {
+            counter++;
+            if (counter % 2 === 0) {
+                inputSerchField.style.display = "none"
+            }
+            else {
+                inputSerchField.style.display = "block"
+            }
+            console.log(counter)
+        }
+
+        // get value from search input
+        const getSearchvalue = (e) => {
+            if (dataa) {
+                dataa = e.value.toUpperCase();
+            }
+            for (let i = 0; i < ApiData.length; i++) {
+                ApiData[i].author ? allAuthor = ApiData[i].author.toUpperCase() : allAuthor = "unknoes";
+            }
+
+            if (dataa.indexOf(allAuthor) !== -1) {
+                console.log('sucess');
+            }
+            else {
+                console.log("unnsuccess")
+            }
+        }
+        const sharetweet = () => {
+            let tweetpostdata = `${ApiData[rnum].text} <br/ Copied from "haseebalamrafiq.web.app"> `
+            let tweetpost = `https://twitter.com/intent/tweet?text=${ApiData[rnum].text}`
+            window.open(tweetpost)
+        }
+        getDataAPI();
+        updateBtn.addEventListener("click", getnewQuotes) //.......
+        // share();
+        // getnewQuotes()
+
+
+    </script>
+</body>
+
+</html>
